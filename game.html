@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super K - Superhero Academy</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-image: url('https://raw.githubusercontent.com/nrjprlpro/ukggame/main/Super%20K%20studying%20in%20the%20class.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: white;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .screen {
+            display: none;
+            width: 100%;
+            height: 100%;
+            max-width: 1024px;
+            max-height: 768px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        .screen.active {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        #subject-selection-screen {
+            background-image: url('https://raw.githubusercontent.com/nrjprlpro/ukggame/main/spiderman%20hulk%20superman%20in%20trouble.png');
+            background-size: cover;
+            background-position: center;
+        }
+        .superhero-card {
+            background-color: rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .superhero-card:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        .day-button {
+            transition: transform 0.2s ease;
+        }
+        .day-button:hover {
+            transform: scale(1.1);
+        }
+        .option-button {
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .option-button:hover {
+            transform: scale(1.05);
+            background-color: rgba(255, 255, 255, 0.4);
+        }
+        .progress-bar-container {
+            width: 100%;
+            height: 20px;
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            margin-top: 1rem;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+            border-radius: 10px;
+            transition: width 0.5s ease-in-out;
+        }
+        #certificateModal, #superQuizModal, #subjectCompleteModal {
+            background-color: rgba(0,0,0,0.7);
+        }
+    </style>
+</head>
+<body class="bg-gray-900">
+
+    <!-- Home Screen -->
+    <div id="home-screen" class="screen active text-center">
+        <div class="absolute top-4 right-4 text-lg font-bold">Total Score: <span id="total-score">0</span></div>
+        <img src="https://raw.githubusercontent.com/nrjprlpro/ukggame/main/super%20k%20came%20to%20save%20all%20super%20heroes.png" alt="Super K" class="w-auto h-64 md:h-80 rounded-2xl shadow-2xl mb-4">
+        <h1 class="text-4xl md:text-6xl font-bold mb-2 text-yellow-300">Welcome Superhero K!</h1>
+        <p class="text-lg md:text-2xl mb-8" id="hindi-intro">सभी सुपरहीरोज़ Problem में हैं, Please उन्हें बचाएं questions ka answer देकर।</p>
+        <button id="start-button" class="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-3 px-8 rounded-full text-2xl animate-pulse">Start Mission</button>
+        <a href="#" id="reset-score" class="absolute bottom-2 right-4 text-xs text-gray-300 hover:text-white">Reset Score</a>
+    </div>
+
+    <!-- Day Selection Screen -->
+    <div id="day-selection-screen" class="screen">
+        <h2 class="text-4xl font-bold mb-8 text-yellow-300">Select Your Day</h2>
+        <div id="day-buttons-container" class="grid grid-cols-3 sm:grid-cols-5 gap-4">
+            <!-- Day buttons will be generated here -->
+        </div>
+        <button id="day-back-button" class="mt-8 bg-gray-700 hover:bg-gray-800 text-white font-bold py-2 px-6 rounded-full">Back</button>
+    </div>
+
+    <!-- Subject Selection Screen -->
+    <div id="subject-selection-screen" class="screen">
+        <h2 class="text-4xl font-bold mb-2 text-yellow-300">Choose a Mission</h2>
+        <h3 class="text-2xl mb-8">Day <span id="selected-day-text"></span></h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
+            <!-- Math -->
+            <div data-subject="Math" class="superhero-card text-center p-6 rounded-2xl cursor-pointer">
+                <img src="https://raw.githubusercontent.com/nrjprlpro/ukggame/main/superman.jpg" alt="Superman" class="w-32 h-32 mx-auto rounded-full mb-4 border-4 border-red-500 object-cover">
+                <h3 class="text-2xl font-bold text-red-300">Math</h3>
+                <p>Save Superman</p>
+            </div>
+            <!-- Science -->
+            <div data-subject="Science" class="superhero-card text-center p-6 rounded-2xl cursor-pointer">
+                <img src="https://raw.githubusercontent.com/nrjprlpro/ukggame/main/aa4a03f69c8fe11fcf231c6e121a51b6.jpg" alt="Iron Man" class="w-32 h-32 mx-auto rounded-full mb-4 border-4 border-yellow-500 object-cover">
+                <h3 class="text-2xl font-bold text-yellow-300">Science</h3>
+                <p>Save Iron Man</p>
+            </div>
+            <!-- English -->
+            <div data-subject="English" class="superhero-card text-center p-6 rounded-2xl cursor-pointer">
+                <img src="https://raw.githubusercontent.com/nrjprlpro/ukggame/main/download.jpg" alt="Spiderman" class="w-32 h-32 mx-auto rounded-full mb-4 border-4 border-blue-500 object-cover">
+                <h3 class="text-2xl font-bold text-blue-300">English</h3>
+                <p>Save Spiderman</p>
+            </div>
+            <!-- Phonics -->
+            <div data-subject="Phonics" class="superhero-card text-center p-6 rounded-2xl cursor-pointer">
+                <img src="https://www.pngmart.com/files/11/Hulk-PNG-Transparent.png" alt="Hulk" class="w-32 h-32 mx-auto rounded-full mb-4 border-4 border-green-500 object-cover">
+                <h3 class="text-2xl font-bold text-green-300">Phonics</h3>
+                <p>Save Hulk</p>
+            </div>
+            <!-- Hindi -->
+            <div data-subject="Hindi" class="superhero-card text-center p-6 rounded-2xl cursor-pointer">
+                <img src="https://raw.githubusercontent.com/nrjprlpro/ukggame/main/0fd8b8568460691a7e1afac0e6d172bd.jpg" alt="Thor" class="w-32 h-32 mx-auto rounded-full mb-4 border-4 border-gray-400 object-cover">
+                <h3 class="text-2xl font-bold text-gray-300">Hindi</h3>
+                <p>Save Thor</p>
+            </div>
+        </div>
+        <button id="subject-back-button" class="mt-8 bg-gray-700 hover:bg-gray-800 text-white font-bold py-2 px-6 rounded-full">Back to Day Selection</button>
+    </div>
+
+    <!-- Question Screen -->
+    <div id="question-screen" class="screen justify-start">
+        <div class="w-full max-w-4xl mx-auto">
+            <div class="flex justify-between items-center mb-4">
+                 <h2 class="text-3xl font-bold">Day <span id="question-day"></span>: <span id="question-subject"></span></h2>
+                 <button id="repeat-audio-button" class="text-4xl">🔊</button>
+            </div>
+            <div class="progress-bar-container">
+                <div id="question-progress-bar" class="progress-bar"></div>
+            </div>
+            <p id="progress-text" class="text-center mt-2 text-lg"></p>
+            
+            <div id="question-container" class="mt-8 text-center bg-white/20 p-8 rounded-2xl">
+                 <p id="review-text" class="text-yellow-300 text-xl font-bold mb-4 hidden">Let's review a question you missed!</p>
+                <p id="question-text" class="text-5xl font-bold mb-8" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.7);"></p>
+                <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Options will be generated here -->
+                </div>
+            </div>
+             <button id="question-back-button" class="mt-8 bg-gray-700 hover:bg-gray-800 text-white font-bold py-2 px-6 rounded-full">Back to Subject Selection</button>
+        </div>
+    </div>
+    
+    <!-- Subject Completion Modal -->
+    <div id="subjectCompleteModal" class="fixed inset-0 w-full h-full items-center justify-center hidden">
+        <div class="bg-white text-gray-900 p-8 rounded-2xl shadow-2xl text-center max-w-md mx-auto transform transition-all duration-300 scale-95 opacity-0">
+            <h2 id="subject-complete-title" class="text-3xl font-bold mb-4 text-green-500">Mission Accomplished!</h2>
+            <img id="subject-complete-image" src="" alt="Superhero Saved!" class="w-64 h-auto mx-auto my-4 rounded-lg border-4 border-yellow-400">
+            <p id="subject-complete-message" class="text-xl mb-6"></p>
+            <button id="close-subject-complete-button" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-full">Continue</button>
+        </div>
+    </div>
+
+    <!-- Certificate Modal (Day Completion) -->
+    <div id="certificateModal" class="fixed inset-0 w-full h-full items-center justify-center hidden">
+        <div class="bg-white text-gray-900 p-10 rounded-2xl shadow-2xl text-center max-w-lg mx-auto transform transition-all duration-300 scale-95 opacity-0">
+            <h2 class="text-3xl font-bold mb-4 text-yellow-500">Congratulations, Super K!</h2>
+            <p class="text-lg mb-4" id="certificate-message"></p>
+            <div id="badge-container" class="mb-6">
+                <p class="text-5xl" id="badge-emoji">🏆</p>
+                <p class="text-xl font-semibold" id="badge-text"></p>
+            </div>
+            <p class="mb-6">You've saved all the superheroes for today!</p>
+            <button id="close-certificate-button" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-full">Continue Mission</button>
+        </div>
+    </div>
+
+    <!-- Super Quiz Modal -->
+     <div id="superQuizModal" class="fixed inset-0 w-full h-full items-center justify-center hidden">
+        <div class="bg-white text-gray-900 p-10 rounded-2xl shadow-2xl text-center max-w-lg mx-auto transform transition-all duration-300 scale-95 opacity-0">
+            <h2 class="text-3xl font-bold mb-4 text-purple-600">End of Week Super Challenge!</h2>
+            <p class="text-lg mb-6">You've completed 5 days! It's time for a Super Quiz to test your skills and earn bonus points.</p>
+            <button id="start-super-quiz-button" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-8 rounded-full text-xl">Start Super Quiz</button>
+             <button id="close-super-quiz-button" class="mt-4 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-full">Maybe Later</button>
+        </div>
+    </div>
+
+
+    <script>
+        // --- DATA & STATE MANAGEMENT ---
+        const gameState = {
+            currentScreen: 'home-screen',
+            totalScore: 0,
+            currentDay: null,
+            currentSubject: null,
+            progress: {}, // { 'day-1': { 'Math': {answered: 10, total: 20}, 'Science': {answered: 20, total: 20} }, ... }
+            wronglyAnswered: [],
+        };
+
+        const superheroData = {
+            'Math': { name: 'Superman', intro: 'Super K, please save Superman!', success: 'Thank you Super K, you saved Superman!', color: 'red' },
+            'Science': { name: 'Iron Man', intro: 'Super K, please save Iron Man!', success: 'Thank you Super K, Iron Man is safe now!', color: 'yellow' },
+            'English': { name: 'Spiderman', intro: 'Super K, please save Spiderman!', success: 'Super K, Spiderman is grateful!', color: 'blue' },
+            'Phonics': { name: 'Hulk', intro: 'Super K, please save Hulk!', success: 'Super K, Hulk is now safe. You’re amazing!', color: 'green' },
+            'Hindi': { name: 'Thor', intro: 'Super K, कृपया Thor को बचाइए।', success: 'शाबाश Super K, आपने Thor को बचा लिया!', color: 'gray' },
+        };
+
+        const savedSuperheroImages = {
+            'Math': 'https://raw.githubusercontent.com/nrjprlpro/ukggame/main/super%20k%20saved%20super%20man.png',
+            'Science': 'https://raw.githubusercontent.com/nrjprlpro/ukggame/main/super%20k%20saved%20iron%20man.png',
+            'English': 'https://raw.githubusercontent.com/nrjprlpro/ukggame/main/super%20k%20saved%20spiderman.png',
+            'Phonics': 'https://raw.githubusercontent.com/nrjprlpro/ukggame/main/super%20k%20saved%20hulk.png',
+            'Hindi': 'https://raw.githubusercontent.com/nrjprlpro/ukggame/main/super%20k%20saved%20batman.png', // Using batman for Thor as provided
+        };
+        
+        // Expanded question bank based on UKG syllabus
+        const questionBank = {
+            'Math': {
+                1: [
+                    { q: "Which number comes after 5?", o: ["4", "6", "7", "5"], a: "6" },
+                    { q: "Count the stars: ⭐⭐⭐⭐", o: ["3", "5", "4", "6"], a: "4" },
+                    { q: "What is 2 + 1?", o: ["2", "3", "4", "1"], a: "3" },
+                    { q: "Which shape is a circle?", o: ["🔵", "🔺", "🟥", "⭐"], a: "🔵" },
+                    { q: "Which number is bigger, 7 or 4?", o: ["7", "4", "Same"], a: "7" },
+                    { q: "What is 3 - 1?", o: ["1", "2", "3", "4"], a: "2" },
+                    { q: "Which object is taller?", o: ["🌳", "🌱"], a: "🌳" },
+                    { q: "What number comes before 9?", o: ["10", "7", "8", "9"], a: "8" },
+                    { q: "How many sides does a triangle have?", o: ["2", "3", "4", "5"], a: "3" },
+                    { q: "What is 1 + 1?", o: ["1", "2", "3", "0"], a: "2" },
+                    { q: "Identify the number 'Five'", o: ["3", "5", "2", "8"], a: "5" },
+                    { q: "Which group has more? 🍎🍎 or 🍎🍎🍎", o: ["🍎🍎", "🍎🍎🍎"], a: "🍎🍎🍎" },
+                    { q: "What is 4 - 2?", o: ["1", "2", "3", "0"], a: "2" },
+                    { q: "Find the square.", o: ["🔵", "🔺", "🟥", "⭐"], a: "🟥" },
+                    { q: "Which number is smaller, 2 or 8?", o: ["2", "8", "Same"], a: "2" },
+                    { q: "Count backwards from 5.", o: ["5,4,3,2,1", "1,2,3,4,5"], a: "5,4,3,2,1" },
+                    { q: "What is 3 + 2?", o: ["4", "5", "6", "3"], a: "5" },
+                    { q: "Which object is shorter?", o: ["🦒", "🐜"], a: "🐜" },
+                    { q: "What time is it if the big hand is on 12 and small hand on 3?", o: ["12 o'clock", "3 o'clock", "9 o'clock"], a: "3 o'clock" },
+                    { q: "Which is not a number?", o: ["6", "9", "A", "1"], a: "A" }
+                ],
+                2: [/* Day 2 Math Questions */]
+            },
+            'Science': {
+                1: [
+                    { q: "Which of these do we see in the sky during the day?", o: ["Moon", "Stars", "Sun", "Clouds"], a: "Sun" },
+                    { q: "Which part of the body do we use to smell a flower?", o: ["Eyes", "Ears", "Nose", "Mouth"], a: "Nose" },
+                    { q: "Which of these is a living thing?", o: ["Car", "Chair", "Tree", "Book"], a: "Tree" },
+                    { q: "What do plants need to grow?", o: ["Sunlight", "Pizza", "Toys", "Blanket"], a: "Sunlight" },
+                    { q: "Which animal lives in water?", o: ["Lion", "Monkey", "Fish", "Elephant"], a: "Fish" },
+                    { q: "What season is hot?", o: ["Winter", "Rainy", "Summer", "Autumn"], a: "Summer" },
+                    { q: "Which of these is a fruit?", o: ["Carrot", "Apple", "Potato", "Cabbage"], a: "Apple" },
+                    { q: "How many senses do we have?", o: ["3", "4", "5", "6"], a: "5" },
+                    { q: "What should we throw in a dustbin?", o: ["Food", "Toys", "Garbage", "Books"], a: "Garbage" },
+                    { q: "Which insect can fly?", o: ["Ant", "Spider", "Butterfly", "Worm"], a: "Butterfly" },
+                    { q: "What do we wear in winter to keep warm?", o: ["T-shirt", "Sweater", "Shorts"], a: "Sweater" },
+                    { q: "Which vehicle runs on tracks?", o: ["Car", "Bus", "Train", "Aeroplane"], a: "Train" },
+                    { q: "What is a baby dog called?", o: ["Kitten", "Puppy", "Cub", "Calf"], a: "Puppy" },
+                    { q: "Which of these is a vegetable?", o: ["Banana", "Orange", "Spinach", "Grapes"], a: "Spinach" },
+                    { q: "What covers most of the Earth?", o: ["Land", "Water", "Sand", "Ice"], a: "Water" },
+                    { q: "Which animal gives us wool?", o: ["Cow", "Goat", "Sheep", "Pig"], a: "Sheep" },
+                    { q: "What do bees make?", o: ["Milk", "Honey", "Jam", "Juice"], a: "Honey" },
+                    { q: "What do we see in the sky at night?", o: ["Sun", "Rainbow", "Moon", "Kite"], a: "Moon" },
+                    { q: "Which part of the body helps us to hear?", o: ["Eyes", "Nose", "Tongue", "Ears"], a: "Ears" },
+                    { q: "To save paper, we should...?", o: ["Tear it", "Recycle it", "Burn it", "Eat it"], a: "Recycle it" }
+                ],
+                2: [/* Day 2 Science Questions */]
+            },
+            'English': {
+                1: [
+                    { q: "Which word rhymes with 'pen'?", o: ["Man", "Hen", "Pin", "Pot"], a: "Hen" },
+                    { q: "Identify the noun: 'The ball is red.'", o: ["The", "is", "red", "ball"], a: "ball" },
+                    { q: "What is the opposite of 'big'?", o: ["Tall", "Small", "Fat", "Long"], a: "Small" },
+                    { q: "Choose the correct article: '___ apple.'", o: ["A", "An", "The"], a: "An" },
+                    { q: "Which is a vowel?", o: ["B", "C", "E", "D"], a: "E" },
+                    { q: "Fill in the blank: 'The cat is ___ the table.'", o: ["in", "on", "at", "of"], a: "on" },
+                    { q: "Which of these is a 'sight word'?", o: ["Elephant", "The", "Beautiful", "Jumping"], a: "The" },
+                    { q: "What do you add to 'dog' to make it plural?", o: ["-es", "-ies", "-s", "-ing"], a: "-s" },
+                    { q: "Which sentence is correct?", o: ["I am a boy.", "Am I boy.", "Boy am I."], a: "I am a boy." },
+                    { q: "Find the word with a 'short a' sound.", o: ["Cake", "Cat", "Car", "Can"], a: "Cat" },
+                    { q: "What is the beginning sound of 'Sun'?", o: ["T", "S", "M", "P"], a: "S" },
+                    { q: "Which is NOT a rhyming pair?", o: ["Fun-Sun", "Go-So", "Day-Night", "See-Bee"], a: "Day-Night" },
+                    { q: "Complete the word: 'B__g'", o: ["a", "e", "i", "u"], a: "a" },
+                    { q: "This/That? '___ is my book (close by).'", o: ["This", "That", "These", "Those"], a: "This" },
+                    { q: "Which letter is silent in 'know'?", o: ["k", "n", "o", "w"], a: "k" },
+                    { q: "What is the capital letter of 'h'?", o: ["h", "H", "I", "J"], a: "H" },
+                    { q: "Find the action word (verb): 'Birds fly in the sky.'", o: ["Birds", "fly", "sky", "in"], a: "fly" },
+                    { q: "Which one is a question?", o: ["I like ice cream.", "What is your name?", "Close the door."], a: "What is your name?" },
+                    { q: "Which word starts with 'ch' sound?", o: ["Ship", "Cat", "Chair", "Photo"], a: "Chair" },
+                    { q: "The color of the sky is...", o: ["Green", "Red", "Blue", "Yellow"], a: "Blue" }
+                ],
+                2: [/* Day 2 English Questions */]
+            },
+            'Phonics': {
+                1: [
+                    { q: "What sound does 'sh' make?", o: ["Ch", "Shhh", "Th", "Ph"], a: "Shhh" },
+                    { q: "Which word has a 'long a' sound like in 'cake'?", o: ["Cat", "Cap", "Lake", "Mat"], a: "Lake" },
+                    { q: "Find the word with the final blend 'st'.", o: ["Stop", "Fast", "Sting", "Step"], a: "Fast" },
+                    { q: "Which word has a 'short e' sound?", o: ["Bed", "See", "Leaf", "Me"], a: "Bed" },
+                    { q: "What is the beginning sound of 'Fish'?", o: ["P", "F", "T", "V"], a: "F" },
+                    { q: "Which two letters make one sound in 'ship'?", o: ["sh", "hi", "ip", "sp"], a: "sh" },
+                    { q: "Which word has a 'long i' sound like in 'bike'?", o: ["Pig", "Sit", "Kite", "Lip"], a: "Kite" },
+                    { q: "What is the end sound of 'cup'?", o: ["c", "u", "p", "t"], a: "p" },
+                    { q: "Find the word with the 'th' digraph.", o: ["That", "Chat", "Shop", "When"], a: "That" },
+                    { q: "Which word has a 'short o' sound?", o: ["Boat", "Go", "Pot", "Rose"], a: "Pot" },
+                    { q: "What is the vowel sound in 'run'?", o: ["a", "e", "i", "u"], a: "u" },
+                    { q: "Which word ends with 'ck' sound?", o: ["Book", "Make", "Duck", "Cake"], a: "Duck" },
+                    { q: "Find the word that does NOT belong: 'cat, mat, sat, car'", o: ["cat", "mat", "sat", "car"], a: "car" },
+                    { q: "What is the middle sound in 'hot'?", o: ["h", "o", "t", "a"], a: "o" },
+                    { q: "Which word has a silent 'e' at the end?", o: ["Red", "Bit", "Make", "Not"], a: "Make" },
+                    { q: "The 'ph' in 'phone' sounds like...", o: ["p", "h", "f", "t"], a: "f" },
+                    { q: "Which word has a 'long e' sound like in 'tree'?", o: ["Bed", "Ten", "See", "Red"], a: "See" },
+                    { q: "What sound does 'ch' make in 'chair'?", o: ["sh", "k", "ch", "th"], a: "ch" },
+                    { q: "Which word has a 'short u' sound?", o: ["Cube", "Flute", "Sun", "Use"], a: "Sun" },
+                    { q: "What is the blend in 'frog'?", o: ["fr", "ro", "og", "fg"], a: "fr" }
+                ],
+                2: [/* Day 2 Phonics Questions */]
+            },
+            'Hindi': {
+                1: [
+                    { q: "'क' के बाद कौन सा अक्षर आता है?", o: ["ग", "ख", "घ", "च"], a: "ख" },
+                    { q: "चित्र पहचानें: 🥭", o: ["सेब", "केला", "आम", "अनार"], a: "आम" },
+                    { q: "इनमें से स्वर कौन सा है?", o: ["क", "ख", "ग", "अ"], a: "अ" },
+                    { q: "दो अक्षरों का शब्द चुनें:", o: ["कमल", "घर", "मगर", "सड़क"], a: "घर" },
+                    { q: "'आ' की मात्रा वाला शब्द कौन सा है?", o: ["कल", "काम", "किल", "कुल"], a: "काम" },
+                    { q: "सही शब्द बनाओ: 'ल + क + म'", o: ["मकल", "लकम", "कमल", "कलम"], a: "कमल" },
+                    { q: "इनमें से व्यंजन कौन सा है?", o: ["आ", "इ", "म", "ऊ"], a: "म" },
+                    { q: "चित्र का पहला अक्षर क्या है: 🐟 (मछली)?", o: ["छ", "ल", "म", "क"], a: "म" },
+                    { q: "खाली स्थान भरें: 'अ __ इ'", o: ["उ", "ए", "आ", "ओ"], a: "आ" },
+                    { q: "जोड़ी मिलाएं: 'राजा' का स्त्रीलिंग?", o: ["लड़का", "मोरनी", "रानी", "शेरनी"], a: "रानी" },
+                    { q: "अशुद्ध शब्द को पहचानें:", o: ["किताब", "कीताब", "कलम", "घर"], a: "कीताब" },
+                    { q: "'ई' की मात्रा वाला शब्द कौन सा है?", o: ["दिन", "नदी", "पिन", "मिल"], a: "नदी" },
+                    { q: "वर्णमाला का अंतिम व्यंजन क्या है?", o: ["ह", "क्ष", "त्र", "ज्ञ"], a: "ज्ञ" },
+                    { q: "चित्र पहचानें: 🏠", o: ["महल", "दुकान", "घर", "स्कूल"], a: "घर" },
+                    { q: "तीन अक्षरों का शब्द चुनें:", o: ["जल", "फल", "नमक", "रथ"], a: "नमक" },
+                    { q: "उल्टा शब्द बताएं: 'दिन'", o: ["सुबह", "शाम", "रात", "दोपहर"], a: "रात" },
+                    { q: "'उ' की मात्रा वाला शब्द कौन सा है?", o: ["फल", "फूल", "पुल", "पाल"], a: "पुल" },
+                    { q: "'ट' से क्या शुरू होता है?", o: ["तरबूज", "टमाटर", "डमरू", "ढक्कन"], a: "टमाटर" },
+                    { q: "खाली स्थान भरें: 'क ख ग __'", o: ["च", "छ", "घ", "ज"], a: "घ" },
+                    { q: "सही शब्द चुनें:", o: ["सूरज", "सुरज", "सरूज", "सुराज"], a: "सूरज" }
+                ],
+                2: [/* Day 2 Hindi Questions */]
+            },
+             'SuperQuiz': [
+                { q: "What is 5 + 3?", o: ["7", "8", "9", "6"], a: "8", subject: "Math" },
+                { q: "Which animal says 'Meow'?", o: ["Dog", "Cow", "Cat", "Lion"], a: "Cat", subject: "Science" },
+            ]
+        };
+
+        // --- DOM ELEMENTS ---
+        const screens = document.querySelectorAll('.screen');
+        const homeScreen = document.getElementById('home-screen');
+        const daySelectionScreen = document.getElementById('day-selection-screen');
+        const subjectSelectionScreen = document.getElementById('subject-selection-screen');
+        const questionScreen = document.getElementById('question-screen');
+
+        const totalScoreEl = document.getElementById('total-score');
+        const startButton = document.getElementById('start-button');
+        const resetScoreButton = document.getElementById('reset-score');
+
+        const dayButtonsContainer = document.getElementById('day-buttons-container');
+        const dayBackButton = document.getElementById('day-back-button');
+
+        const subjectCards = document.querySelectorAll('.superhero-card');
+        const subjectBackButton = document.getElementById('subject-back-button');
+        const selectedDayText = document.getElementById('selected-day-text');
+
+        const questionDayEl = document.getElementById('question-day');
+        const questionSubjectEl = document.getElementById('question-subject');
+        const questionTextEl = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const repeatAudioButton = document.getElementById('repeat-audio-button');
+        const questionBackButton = document.getElementById('question-back-button');
+        const progressBar = document.getElementById('question-progress-bar');
+        const progressText = document.getElementById('progress-text');
+        const reviewTextEl = document.getElementById('review-text');
+        
+        const certificateModal = document.getElementById('certificateModal');
+        const certificateMessageEl = document.getElementById('certificate-message');
+        const badgeEmojiEl = document.getElementById('badge-emoji');
+        const badgeTextEl = document.getElementById('badge-text');
+        const closeCertificateButton = document.getElementById('close-certificate-button');
+
+        const subjectCompleteModal = document.getElementById('subjectCompleteModal');
+        const subjectCompleteImageEl = document.getElementById('subject-complete-image');
+        const subjectCompleteMessageEl = document.getElementById('subject-complete-message');
+        const closeSubjectCompleteButton = document.getElementById('close-subject-complete-button');
+
+        const superQuizModal = document.getElementById('superQuizModal');
+        const startSuperQuizButton = document.getElementById('start-super-quiz-button');
+        const closeSuperQuizButton = document.getElementById('close-super-quiz-button');
+
+
+        // --- AUDIO HANDLING ---
+        const synth = window.speechSynthesis;
+        let currentUtterance = null;
+
+        function speak(text, lang = 'en-IN') {
+            if (synth.speaking) {
+                synth.cancel();
+            }
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = lang;
+            utterance.rate = 0.9;
+            utterance.pitch = 1.1;
+
+            const voices = synth.getVoices();
+            let selectedVoice = null;
+
+            if (lang === 'hi-IN') {
+                selectedVoice = voices.find(voice => voice.lang === 'hi-IN' && (voice.name.includes('Google') || voice.name.includes('Female')));
+                if (!selectedVoice) selectedVoice = voices.find(voice => voice.lang === 'hi-IN');
+            } else { // For English ('en-IN')
+                 // Prioritize Indian English voices
+                 selectedVoice = voices.find(voice => voice.lang === 'en-IN' && voice.name.includes('Google') && voice.name.includes('Female'));
+                 if (!selectedVoice) selectedVoice = voices.find(voice => voice.lang === 'en-IN' && voice.name.includes('Female'));
+                 if (!selectedVoice) selectedVoice = voices.find(voice => voice.lang === 'en-IN');
+                 // Fallback to other English voices if no Indian voice is found
+                 if (!selectedVoice) selectedVoice = voices.find(voice => voice.name === 'Google UK English Female');
+                 if (!selectedVoice) selectedVoice = voices.find(voice => voice.lang === 'en-US' && voice.name.includes('Female'));
+            }
+            
+            utterance.voice = selectedVoice;
+            currentUtterance = utterance;
+            synth.speak(utterance);
+        }
+        
+        speechSynthesis.onvoiceschanged = () => {
+           console.log("Voices loaded:", synth.getVoices());
+        };
+
+
+        // --- NAVIGATION ---
+        function showScreen(screenId) {
+            screens.forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+            gameState.currentScreen = screenId;
+        }
+
+
+        // --- DATA PERSISTENCE ---
+        function saveGameState() {
+            localStorage.setItem('superKGameState', JSON.stringify(gameState));
+        }
+
+        function loadGameState() {
+            const savedState = localStorage.getItem('superKGameState');
+            if (savedState) {
+                const loadedState = JSON.parse(savedState);
+                Object.assign(gameState, loadedState);
+                updateScore();
+            }
+        }
+        
+        function resetGame() {
+            if(confirm("Are you sure you want to reset your score and progress?")){
+                 localStorage.removeItem('superKGameState');
+                gameState.totalScore = 0;
+                gameState.progress = {};
+                gameState.wronglyAnswered = [];
+                updateScore();
+                window.location.reload();
+            }
+        }
+
+        // --- UI UPDATES ---
+        function updateScore() {
+            totalScoreEl.innerText = gameState.totalScore;
+        }
+
+        function generateDayButtons() {
+            dayButtonsContainer.innerHTML = '';
+            for (let i = 1; i <= 30; i++) {
+                const button = document.createElement('button');
+                button.classList.add('day-button', 'bg-blue-500', 'hover:bg-blue-600', 'text-white', 'font-bold', 'py-4', 'px-6', 'rounded-lg', 'text-xl');
+                button.innerText = `Day ${i}`;
+                button.dataset.day = i;
+                dayButtonsContainer.appendChild(button);
+            }
+        }
+
+        // --- GAME LOGIC ---
+
+        function startDay(day) {
+            gameState.currentDay = day;
+            selectedDayText.innerText = day;
+            showScreen('subject-selection-screen');
+        }
+
+        function startSubject(subject) {
+            gameState.currentSubject = subject;
+            gameState.wronglyAnswered = gameState.wronglyAnswered.filter(q => !(q.day === gameState.currentDay && q.subject === gameState.currentSubject));
+
+            const hero = superheroData[subject];
+            const introAudio = (subject === 'Hindi') ? hero.intro : hero.intro.replace('Super K, ', '');
+            speak(introAudio, subject === 'Hindi' ? 'hi-IN' : 'en-IN');
+            
+            setTimeout(() => {
+                loadQuestion();
+                showScreen('question-screen');
+            }, 2000);
+        }
+        
+        function getQuestionForCurrentState() {
+            const { currentDay, currentSubject } = gameState;
+            const reviewQuestion = gameState.wronglyAnswered.find(q => q.day == currentDay && q.subject == currentSubject);
+            if (reviewQuestion) {
+                return { ...reviewQuestion, isReview: true };
+            }
+
+            const dayKey = `day-${currentDay}`;
+            const subjectProgress = gameState.progress[dayKey]?.[currentSubject] || 0;
+
+            if (subjectProgress >= 20) {
+                return null;
+            }
+
+            const dayQuestions = questionBank[currentSubject]?.[currentDay];
+            if (!dayQuestions || dayQuestions.length === 0) {
+                 return { q: "More questions coming soon!", o: ["Go Back"], a: "Go Back", isEnd: true };
+            }
+            
+            const question = dayQuestions[subjectProgress];
+            return { ...question, isReview: false };
+        }
+
+
+        function loadQuestion() {
+            const question = getQuestionForCurrentState();
+            
+            if (!question) {
+                handleSubjectCompletion();
+                return;
+            }
+            if(question.isEnd) {
+                showScreen('subject-selection-screen');
+                return;
+            }
+
+            reviewTextEl.classList.toggle('hidden', !question.isReview);
+            
+            const { currentDay, currentSubject } = gameState;
+            const questionNumber = gameState.progress[`day-${currentDay}`]?.[currentSubject] || 0;
+
+            questionDayEl.innerText = currentDay;
+            questionSubjectEl.innerText = currentSubject;
+            questionTextEl.innerText = question.q;
+            
+            updateProgressBar(questionNumber, 20);
+
+            optionsContainer.innerHTML = '';
+            const shuffledOptions = [...question.o].sort(() => Math.random() - 0.5);
+            shuffledOptions.forEach(optionText => {
+                const button = document.createElement('button');
+                button.classList.add('option-button', 'w-full', 'bg-white/30', 'p-4', 'rounded-lg', 'text-3xl', 'text-white', 'font-bold');
+                button.style.textShadow = '1px 1px 3px rgba(0,0,0,0.5)';
+                button.innerText = optionText;
+                button.onclick = () => handleAnswer(optionText, question);
+                optionsContainer.appendChild(button);
+            });
+            
+            const lang = currentSubject === 'Hindi' ? 'hi-IN' : 'en-IN';
+            const questionToRead = `${question.q}. The options are: ${question.o.join(', ')}`;
+            speak(questionToRead, lang);
+        }
+        
+        function handleAnswer(selectedAnswer, question) {
+            optionsContainer.querySelectorAll('button').forEach(b => b.disabled = true);
+            
+            const correctAnswer = question.a;
+            let isCorrect = selectedAnswer === correctAnswer;
+
+            Array.from(optionsContainer.children).forEach(button => {
+                if (button.innerText === correctAnswer) {
+                    button.classList.remove('bg-white/30');
+                    button.classList.add('bg-green-500');
+                } else if (button.innerText === selectedAnswer && !isCorrect) {
+                    button.classList.remove('bg-white/30');
+                    button.classList.add('bg-red-500');
+                }
+            });
+
+            if (isCorrect) {
+                 if(!question.isReview) {
+                    const pointsPerQuestion = 2 + Math.floor((gameState.currentDay - 1) / 5);
+                    gameState.totalScore += pointsPerQuestion;
+                    updateScore();
+                 }
+                 gameState.wronglyAnswered = gameState.wronglyAnswered.filter(q => q.q !== question.q);
+            } else {
+                 if(!question.isReview){
+                    const isAlreadyWrong = gameState.wronglyAnswered.some(q => q.q === question.q);
+                    if(!isAlreadyWrong) {
+                        gameState.wronglyAnswered.push({ ...question, day: gameState.currentDay, subject: gameState.currentSubject });
+                    }
+                 }
+            }
+
+            if(!question.isReview) {
+                const dayKey = `day-${gameState.currentDay}`;
+                if (!gameState.progress[dayKey]) gameState.progress[dayKey] = {};
+                const currentProgress = gameState.progress[dayKey][gameState.currentSubject] || 0;
+                gameState.progress[dayKey][gameState.currentSubject] = currentProgress + 1;
+                updateProgressBar(currentProgress + 1, 20);
+            }
+
+            saveGameState();
+
+            setTimeout(() => {
+                loadQuestion();
+            }, 1500);
+        }
+        
+        function handleSubjectCompletion() {
+            const { currentSubject } = gameState;
+            const hero = superheroData[currentSubject];
+            speak(hero.success, currentSubject === 'Hindi' ? 'hi-IN' : 'en-IN');
+
+            subjectCompleteImageEl.src = savedSuperheroImages[currentSubject];
+            subjectCompleteMessageEl.innerText = hero.success;
+
+            subjectCompleteModal.classList.remove('hidden');
+            subjectCompleteModal.classList.add('flex');
+            setTimeout(() => {
+                 subjectCompleteModal.querySelector('div').classList.remove('scale-95', 'opacity-0');
+            }, 10);
+        }
+        
+         function checkIfAllSubjectsDoneForDay() {
+            const dayProgress = gameState.progress[`day-${gameState.currentDay}`];
+            if (!dayProgress) return false;
+            const subjectsDone = Object.values(dayProgress).filter(qCount => qCount >= 20).length;
+            return subjectsDone >= 5;
+        }
+
+        function handleDayCompletion() {
+            const day = gameState.currentDay;
+            const badges = [
+                { emoji: '🏆', text: 'Master Badge' }, { emoji: '🌟', text: 'Star Achiever' },
+                { emoji: '🚀', text: 'Rocket Learner' }, { emoji: '💡', text: 'Brilliant Mind' },
+                { emoji: '🏅', text: 'Champion Medal' },
+            ];
+            const badge = badges[(day - 1) % badges.length];
+
+            certificateMessageEl.innerText = `You've earned the ${badge.text} Badge – Rescued All Super Heroes on Day ${day}!`;
+            badgeEmojiEl.innerText = badge.emoji;
+            badgeTextEl.innerText = badge.text;
+
+            certificateModal.classList.remove('hidden');
+            certificateModal.classList.add('flex');
+            setTimeout(() => {
+                 certificateModal.querySelector('div').classList.remove('scale-95', 'opacity-0');
+            }, 10);
+            
+            if (day > 0 && day % 5 === 0) {
+                 setTimeout(showSuperQuizPrompt, 2000);
+            }
+        }
+        
+         function showSuperQuizPrompt() {
+            superQuizModal.classList.remove('hidden');
+            superQuizModal.classList.add('flex');
+            setTimeout(() => {
+                superQuizModal.querySelector('div').classList.remove('scale-95', 'opacity-0');
+            }, 10);
+        }
+
+        function updateProgressBar(current, total) {
+             const percentage = Math.min((current / total) * 100, 100);
+             progressBar.style.width = `${percentage}%`;
+             progressText.innerText = `You're ${current} steps closer to saving ${superheroData[gameState.currentSubject].name}!`;
+        }
+
+        // --- EVENT LISTENERS ---
+        startButton.addEventListener('click', () => {
+            speak("Welcome Superhero K!");
+            setTimeout(() => speak("सभी सुपरहीरोज़ Problem में हैं, Please उन्हें बचाएं questions ka answer देकर।", 'hi-IN'), 2000);
+            showScreen('day-selection-screen');
+        });
+        
+        resetScoreButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            resetGame();
+        });
+
+        dayButtonsContainer.addEventListener('click', (e) => {
+            if (e.target.matches('.day-button')) {
+                const day = e.target.dataset.day;
+                startDay(day);
+            }
+        });
+
+        dayBackButton.addEventListener('click', () => showScreen('home-screen'));
+        subjectBackButton.addEventListener('click', () => showScreen('day-selection-screen'));
+        questionBackButton.addEventListener('click', () => showScreen('subject-selection-screen'));
+
+        subjectCards.forEach(card => {
+            card.addEventListener('click', () => {
+                const subject = card.dataset.subject;
+                startSubject(subject);
+            });
+        });
+        
+        repeatAudioButton.addEventListener('click', () => {
+            if(currentUtterance){
+                synth.cancel();
+                synth.speak(currentUtterance);
+            }
+        });
+
+        closeSubjectCompleteButton.addEventListener('click', () => {
+            subjectCompleteModal.querySelector('div').classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                subjectCompleteModal.classList.add('hidden');
+                subjectCompleteModal.classList.remove('flex');
+                
+                if (checkIfAllSubjectsDoneForDay()) {
+                    handleDayCompletion();
+                } else {
+                    showScreen('subject-selection-screen');
+                }
+            }, 300);
+        });
+        
+        closeCertificateButton.addEventListener('click', () => {
+            certificateModal.querySelector('div').classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                 certificateModal.classList.add('hidden');
+                 certificateModal.classList.remove('flex');
+                 showScreen('day-selection-screen');
+            }, 300);
+        });
+
+        startSuperQuizButton.addEventListener('click', () => {
+            console.log("Starting Super Quiz!");
+            gameState.currentSubject = 'SuperQuiz';
+            loadQuestion();
+            superQuizModal.classList.add('hidden');
+            showScreen('question-screen');
+        });
+
+        closeSuperQuizButton.addEventListener('click', () => {
+             superQuizModal.querySelector('div').classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                 superQuizModal.classList.add('hidden');
+                 superQuizModal.classList.remove('flex');
+            }, 300);
+        });
+
+
+        // --- INITIALIZATION ---
+        function init() {
+            loadGameState();
+            generateDayButtons();
+            showScreen('home-screen');
+             speechSynthesis.getVoices();
+             setTimeout(()=>speak(''), 500);
+        }
+
+        init();
+
+    </script>
+</body>
+</html>
+
